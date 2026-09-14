@@ -1,5 +1,6 @@
 #include "display_task.h"
-#include "lopaka_generated.h"
+#include "screens.h"
+#include "ui_primitives.h"
 #include "../config/pins.h"
 #include "../app/app_task.h"
 #include <Arduino.h>
