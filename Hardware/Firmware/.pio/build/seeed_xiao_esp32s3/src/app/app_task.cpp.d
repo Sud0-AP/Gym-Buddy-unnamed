@@ -1,8 +1,8 @@
-.pio/build/seeed_xiao_esp32s3/src/main.cpp.o: src/main.cpp \
- /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
- /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp_arduino_version.h \
+.pio/build/seeed_xiao_esp32s3/src/app/app_task.cpp.o: \
+ src/app/app_task.cpp src/app/app_task.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/FreeRTOS.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/esp_additions/freertos/FreeRTOSConfig.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/qio_opi/include/sdkconfig.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_common/include/esp_compiler.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/port/xtensa/include/freertos/FreeRTOSConfig_arch.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/port/xtensa/include/freertos/xtensa_config.h \
@@ -17,6 +17,7 @@
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/xtensa/include/xtensa/xtensa_context.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/xtensa/include/xtensa/corebits.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/xtensa/include/xtensa/xtruntime-frames.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/newlib/platform_include/assert.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_rom/include/esp_rom_sys.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/reset_reasons.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_rom/include/esp32s3/rom/ets_sys.h \
@@ -69,9 +70,15 @@
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/task.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/list.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/esp_additions/freertos/task_snapshot.h \
- /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/semphr.h \
+ src/app/nav_stack.h src/app/nav_state.h src/app/../input/input_events.h \
+ src/app/../input/input_task.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/queue.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/task.h \
+ src/app/../display/display_events.h src/app/../display/display_task.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp_arduino_version.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/semphr.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/queue.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_hw_support/include/esp_sleep.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/hal/include/hal/touch_sensor_types.h \
@@ -81,7 +88,6 @@
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/gpio_struct.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/gpio_reg.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/gpio_sig_map.h \
- /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/queue.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/event_groups.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/timers.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-log.h \
@@ -178,7 +184,4 @@
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/spi_flash/include/esp_spi_flash_counters.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_hw_support/include/soc/esp32/spiram.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/io_pin_remap.h \
- /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
- src/display/display_task.h src/display/display_events.h \
- src/input/input_task.h src/input/input_events.h src/app/app_task.h \
- src/app/nav_stack.h src/app/nav_state.h
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h
