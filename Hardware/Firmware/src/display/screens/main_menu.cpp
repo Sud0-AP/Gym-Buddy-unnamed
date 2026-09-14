@@ -15,20 +15,20 @@ static void draw_menu_item(uint8_t index, bool is_selected) {
 
     if (is_selected) {
         // Draw the pill frame around this item
-        tft.drawBitmap(20, pill_y, image_menu_selection_pill_bits, 260, 72, COLOR_ACCENT);
+        tft.drawBitmap(10, pill_y, image_selection_pill_bits, 260, 72, COLOR_ACCENT);
         tft.setTextColor(COLOR_TEXT_SEL);
     } else {
         // Clear pill area by drawing dark background in pill bounding box
-        tft.fillRect(20, pill_y, 260, 72, COLOR_BG);
+        tft.fillRect(10, pill_y, 260, 72, COLOR_BG);
         tft.setTextColor(COLOR_TEXT_UNSEL);
     }
 
     // Animation icon placeholder (static frame 0)
-    tft.drawRect(27, icon_y, 48, 48, COLOR_GREY_INNER);
+    tft.drawRect(17, icon_y, 48, 48, COLOR_GREY_INNER);
 
     // Item label
     tft.setTextSize(2);
-    tft.drawString(MENU_LABELS[index], 110, text_y);
+    tft.drawString(MENU_LABELS[index], 100, text_y);
 }
 
 void draw_main_menu_full(uint8_t selection_index) {

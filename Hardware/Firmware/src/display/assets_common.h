@@ -32,8 +32,7 @@ extern const unsigned char image_scrollbar_arrow_dn_small[];
 extern const unsigned char image_scrollbar_arrow_up_small[];
 extern const unsigned char image_scrollbar_center_marker[];
 
-// ===== SELECTION PILL ASSETS =====
-extern const unsigned char image_menu_selection_pill_bits[];
-extern const unsigned char image_settings_selection_pill_bits[];
+// ===== SELECTION PILL ASSET =====
+extern const unsigned char image_selection_pill_bits[];
 
 #endif // ASSETS_COMMON_H

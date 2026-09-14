@@ -33,11 +33,7 @@ const unsigned char PROGMEM image_scrollbar_arrow_dn_small[] = {0xfe,0x7c,0x38,0
 const unsigned char PROGMEM image_scrollbar_arrow_up_small[] = {0x10,0x38,0x7c,0xfe};
 const unsigned char PROGMEM image_scrollbar_center_marker[]   = {0xfe,0x00,0x00,0xfe,0x00,0x00,0xfe,0x00,0x00,0xfe};
 
-// ===== SELECTION PILL ASSETS =====
-const unsigned char PROGMEM image_menu_selection_pill_bits[] = {
-    #include "lopaka_menu_pill.inc"
-};
-
-const unsigned char PROGMEM image_settings_selection_pill_bits[] = {
-    #include "lopaka_settings_pill.inc"
+// ===== SELECTION PILL ASSET (Shared between Main Menu & Settings) =====
+const unsigned char PROGMEM image_selection_pill_bits[] = {
+    #include "lopaka_selection_pill.inc"
 };

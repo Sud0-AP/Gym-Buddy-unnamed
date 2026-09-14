@@ -14,7 +14,7 @@ static void draw_settings_display_item(uint8_t index, bool is_selected) {
     uint16_t text_y = TEXT_Y_POSITIONS[index];
 
     if (is_selected) {
-        tft.drawBitmap(10, pill_y, image_settings_selection_pill_bits, 260, 72, COLOR_ACCENT);
+        tft.drawBitmap(10, pill_y, image_selection_pill_bits, 260, 72, COLOR_ACCENT);
         tft.setTextColor(COLOR_TEXT_SEL);
     } else {
         tft.fillRect(10, pill_y, 260, 72, COLOR_BG);
