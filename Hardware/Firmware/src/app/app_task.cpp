@@ -75,12 +75,9 @@ static void app_handle_input_event(const InputEvent& evt) {
                     log_nav_state("Nav selection");
                     notify_display_refresh();
                 } else if (screen_id == SCREEN_SETTINGS_BRIGHTNESS) {
-                    // Brightness adjustment: +1 per 2 detents (with detent counter)
-                    static uint8_t cw_detent_count = 0;
-                    cw_detent_count++;
-                    if (cw_detent_count >= 2) {
-                        cw_detent_count = 0;
-                        uint8_t new_brightness = (current.selection_index < 100) ? current.selection_index + 1 : 0;  // Wrap at 100
+                    // Decrement brightness (clamped at 0, no wrap)
+                    if (current.selection_index > 0) {
+                        uint8_t new_brightness = (current.selection_index >= 5) ? (current.selection_index - 5) : 0;
                         g_nav_stack.set_current_selection(new_brightness);
                         log_nav_state("Brightness adjust");
                         notify_display_refresh();
@@ -95,12 +92,9 @@ static void app_handle_input_event(const InputEvent& evt) {
                     log_nav_state("Nav selection");
                     notify_display_refresh();
                 } else if (screen_id == SCREEN_SETTINGS_BRIGHTNESS) {
-                    // Brightness adjustment: -1 per 2 detents (with detent counter)
-                    static uint8_t ccw_detent_count = 0;
-                    ccw_detent_count++;
-                    if (ccw_detent_count >= 2) {
-                        ccw_detent_count = 0;
-                        uint8_t new_brightness = (current.selection_index > 0) ? current.selection_index - 1 : 100;  // Wrap at 0
+                    // Increment brightness (clamped at 100, no wrap)
+                    if (current.selection_index < 100) {
+                        uint8_t new_brightness = (current.selection_index <= 95) ? (current.selection_index + 5) : 100;
                         g_nav_stack.set_current_selection(new_brightness);
                         log_nav_state("Brightness adjust");
                         notify_display_refresh();
