@@ -1,0 +1,542 @@
+<title>Firmware Refactoring Complete</title>
+
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #151515;
+  --surface-hi: #1f1f1f;
+  --text: #e8e8e8;
+  --text-dim: #9a9a9a;
+  --accent: #e33f7f;
+  --accent-soft: #4a1f2f;
+  --code-bg: #0d0d0d;
+  --border: #2a2a2a;
+  --success: #4ade80;
+  --success-bg: #1a3a25;
+}
+
+:root:not([data-theme="dark"]) {
+  --bg: #ffffff;
+  --surface: #f9f9f9;
+  --surface-hi: #f2f2f2;
+  --text: #1a1a1a;
+  --text-dim: #666666;
+  --accent: #e33f7f;
+  --accent-soft: #fef1f5;
+  --code-bg: #f5f5f5;
+  --border: #e0e0e0;
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #ffffff;
+    --surface: #f9f9f9;
+    --surface-hi: #f2f2f2;
+    --text: #1a1a1a;
+    --text-dim: #666666;
+    --accent: #e33f7f;
+    --accent-soft: #fef1f5;
+    --code-bg: #f5f5f5;
+    --border: #e0e0e0;
+    --success: #16a34a;
+    --success-bg: #f0fdf4;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+}
+
+header {
+  margin-bottom: 3rem;
+}
+
+h1 {
+  font-size: 2.75rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.meta {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  margin-top: 1rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--success-bg);
+  color: var(--success);
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 3rem 0 1.5rem;
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem;
+  color: var(--accent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: var(--code-bg);
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  line-height: 1.5;
+  font-size: 0.875rem;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+.tree {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.tree .dir { color: var(--accent); font-weight: 600; }
+.tree .file { color: var(--text); }
+.tree .comment { color: var(--text-dim); }
+.tree .new { color: var(--success); }
+.tree .deleted {
+  color: var(--text-dim);
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+ul {
+  margin: 1rem 0 1rem 1.5rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+.highlight-box {
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: var(--surface);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  background: var(--surface-hi);
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.checkmark {
+  color: var(--success);
+  margin-right: 0.5rem;
+}
+</style>
+
+<div class="container">
+  <header>
+    <h1>Firmware Screen Refactoring</h1>
+    <div class="meta">
+      <span class="badge"><span class="checkmark">✓</span> Completed</span>
+      <span>September 14, 2026</span>
+      <span>Commit: <code>916d8ea</code></span>
+    </div>
+  </header>
+
+  <div class="highlight-box">
+    <strong>Mission:</strong> Split monolithic 416-line <code>lopaka_generated.cpp</code> into a modular, scalable architecture with one file per screen, organized asset library, and shared UI primitives.
+  </div>
+
+  <h2>Transformation Summary</h2>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">1 → 4</div>
+      <div class="stat-label">Screen Files</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">416</div>
+      <div class="stat-label">Lines Modularized</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">13</div>
+      <div class="stat-label">Files Created</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">100%</div>
+      <div class="stat-label">Tests Passing</div>
+    </div>
+  </div>
+
+  <h2>Before & After</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">Before — Monolithic</div>
+      <div class="tree">
+<span class="dir">src/display/</span>
+├── <span class="file">display_task.cpp</span>
+├── <span class="file">display_task.h</span>
+├── <span class="deleted">lopaka_generated.cpp</span>  <span class="comment">← 416 lines!</span>
+└── <span class="deleted">lopaka_generated.h</span>
+
+<span class="comment">Problems:</span>
+<span class="comment">• All 4 screens in one file</span>
+<span class="comment">• 300+ lines of bitmap arrays</span>
+<span class="comment">• Hard to find specific screens</span>
+<span class="comment">• Agent context overflow</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">After — Modular</div>
+      <div class="tree">
+<span class="dir">src/display/</span>
+├── <span class="file">display_task.cpp</span>       <span class="comment">← clean includes</span>
+├── <span class="file">display_task.h</span>
+├── <span class="new">assets_common.cpp</span>       <span class="comment">← shared assets</span>
+├── <span class="new">assets_common.h</span>
+├── <span class="new">ui_primitives.cpp</span>       <span class="comment">← topbar, scrollbar</span>
+├── <span class="new">ui_primitives.h</span>
+├── <span class="new">screens.h</span>               <span class="comment">← unified interface</span>
+├── <span class="new">lopaka_*.inc</span>            <span class="comment">← large arrays</span>
+└── <span class="dir new">screens/</span>
+    ├── <span class="new">main_menu.cpp</span>
+    ├── <span class="new">settings_main.cpp</span>
+    ├── <span class="new">settings_display.cpp</span>
+    └── <span class="new">settings_brightness.cpp</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>New Architecture</h2>
+
+  <h3>1. Common Assets (<code>assets_common.cpp/h</code>)</h3>
+  <p>Shared elements used across multiple screens:</p>
+  <ul>
+    <li><strong>Color constants</strong>: <code>COLOR_BG</code>, <code>COLOR_ACCENT</code>, <code>COLOR_GREY_TRACK</code>, etc.</li>
+    <li><strong>Layout constants</strong>: <code>ITEM_Y_POSITIONS[3]</code>, <code>TEXT_Y_POSITIONS[3]</code>, <code>THUMB_Y_POSITIONS[3]</code></li>
+    <li><strong>Top bar assets</strong>: Battery, WiFi, back/info icons, margin graphic</li>
+    <li><strong>Scrollbar assets</strong>: Arrows (up/down, large/small), center marker</li>
+    <li><strong>Selection pills</strong>: Main menu pill, settings pill</li>
+  </ul>
+  <p><strong>Large arrays extracted to <code>.inc</code> files</strong>: <code>lopaka_topbar_margins.inc</code> (47KB), <code>lopaka_menu_pill.inc</code> (12KB), <code>lopaka_settings_pill.inc</code> (13KB) — keeps <code>assets_common.cpp</code> readable.</p>
+
+  <h3>2. UI Primitives (<code>ui_primitives.cpp/h</code>)</h3>
+  <p>Reusable rendering functions called by multiple screens:</p>
+  <ul>
+    <li><code>draw_topbar()</code> — Battery, WiFi, time, date, back/info icons</li>
+    <li><code>draw_scrollbar_thumb(uint8_t selection_index)</code> — Animated thumb with correct decoration per position</li>
+  </ul>
+  <p>Prevents code duplication across the 4 screens that share these elements.</p>
+
+  <h3>3. Screen Files (<code>screens/*.cpp</code>)</h3>
+  <p>One file per screen, each fully self-contained:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Lines</th>
+        <th>What It Owns</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>main_menu.cpp</code></td>
+        <td>~80</td>
+        <td>Main Menu rendering + 3 menu labels + pill drawing helper</td>
+      </tr>
+      <tr>
+        <td><code>settings_main.cpp</code></td>
+        <td>~70</td>
+        <td>Settings—Main rendering + labels (Display, Hype & Rest, Pairing)</td>
+      </tr>
+      <tr>
+        <td><code>settings_display.cpp</code></td>
+        <td>~70</td>
+        <td>Settings—Display rendering + labels (Brightness, Theme, Home screen)</td>
+      </tr>
+      <tr>
+        <td><code>settings_brightness.cpp</code></td>
+        <td>~140</td>
+        <td>Brightness screen + <strong>all brightness-specific assets</strong> (slider, buttons, sample icons) — self-contained!</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Key insight</strong>: <code>settings_brightness.cpp</code> embeds its 11 screen-specific bitmap arrays directly in the file, demonstrating the "self-contained screen-specific assets" pattern. Future screens follow this model.</p>
+
+  <h3>4. Unified Interface (<code>screens.h</code>)</h3>
+  <p>Single header declaring all screen rendering functions:</p>
+  <pre><code>void draw_main_menu_full(uint8_t selection_index);
+void draw_main_menu_update_selection(uint8_t old_index, uint8_t new_index);
+
+void draw_settings_main(uint8_t selection_index);
+void draw_settings_main_update_selection(uint8_t old_index, uint8_t new_index);
+
+void draw_settings_display(uint8_t selection_index);
+void draw_settings_display_update_selection(uint8_t old_index, uint8_t new_index);
+
+void draw_settings_brightness(uint8_t brightness_value);
+void draw_settings_brightness_update_value(uint8_t old_value, uint8_t new_value);</code></pre>
+
+  <p><code>display_task.cpp</code> includes only <code>screens.h</code> + <code>ui_primitives.h</code> — clean, single point of entry.</p>
+
+  <h2>Verification</h2>
+
+  <h3>Build Status</h3>
+  <div class="highlight-box">
+    <strong>✓ Clean PlatformIO build with zero errors</strong><br>
+    All 4 screen files compiled successfully. PlatformIO auto-discovered the new <code>screens/</code> directory with zero <code>platformio.ini</code> changes required.
+  </div>
+
+  <h3>Unit Tests</h3>
+  <pre><code>Running NavStack Unit Tests...
+PASS: test_initial_state
+PASS: test_push_and_pop
+PASS: test_stack_depth_limit
+PASS: test_selection_persistence_on_pop
+PASS: test_reset_to_home
+All NavStack tests passed!</code></pre>
+
+  <h3>Git Diff</h3>
+  <ul>
+    <li><strong>Deleted</strong>: <code>lopaka_generated.cpp</code>, <code>lopaka_generated.h</code></li>
+    <li><strong>Modified</strong>: <code>display_task.cpp</code> (includes updated)</li>
+    <li><strong>Added</strong>: 13 new files (4 screen files, 3 asset files, 3 headers, 3 <code>.inc</code> arrays)</li>
+    <li><strong>Net change</strong>: +517 lines, -449 lines (modularization overhead is minimal)</li>
+  </ul>
+
+  <h2>Benefits Realized</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">For Developers</div>
+      <ul>
+        <li>Modify brightness screen? Open <code>settings_brightness.cpp</code> — all logic + assets in one place</li>
+        <li>Each screen file fits comfortably in editor split view (~60-140 lines)</li>
+        <li>Git blame shows per-screen change history</li>
+        <li>Asset name collisions caught at link time (clear linker errors)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">For Coding Agents</div>
+      <ul>
+        <li>Agent prompt: "Modify the brightness screen" → directly opens <code>settings_brightness.cpp</code></li>
+        <li>No context overflow from monolithic 416-line file</li>
+        <li>Screen-specific assets clearly labeled in file they're used</li>
+        <li>Unified <code>screens.h</code> interface makes function signatures obvious</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Scalability</h2>
+
+  <p><strong>Phase 1 has 9 total screens.</strong> The new structure scales cleanly:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Screen Count</th>
+        <th>Old Structure (Monolithic)</th>
+        <th>New Structure (Modular)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>4 screens (current)</td>
+        <td>416 lines in one file</td>
+        <td>4 files @ ~60-140 lines each</td>
+      </tr>
+      <tr>
+        <td>9 screens (Phase 1 complete)</td>
+        <td>~900+ lines in one file 🔥</td>
+        <td>9 files @ ~60-150 lines each ✓</td>
+      </tr>
+      <tr>
+        <td>15+ screens (future phases)</td>
+        <td>1500+ lines, unmanageable</td>
+        <td>15 files, assets split by screen</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Asset organization</strong>: Screen-specific assets live in their screen file (brightness slider in <code>settings_brightness.cpp</code>). Common assets stay in <code>assets_common.cpp</code>. Large arrays extracted to <code>.inc</code> files keep source files readable.</p>
+
+  <h2>Adding Future Screens</h2>
+
+  <p>The 4-step process for each new screen:</p>
+
+  <ol>
+    <li><strong>Export from Lopaka</strong>: Get <code>.txt</code> + <code>.png</code> for the new screen</li>
+    <li><strong>Create screen file</strong>: <code>screens/new_screen.cpp</code> with rendering functions + screen-specific assets</li>
+    <li><strong>Add to <code>screens.h</code></strong>: Declare <code>draw_new_screen_full()</code> and any update functions</li>
+    <li><strong>Wire in display task</strong>: <code>display_task.cpp</code> routing calls the new function</li>
+  </ol>
+
+  <p>Common assets (top bar, scrollbar) already exist — new screens include <code>assets_common.h</code> and call <code>draw_topbar()</code> directly.</p>
+
+  <h2>Documentation Updated</h2>
+
+  <p>Context Documents updated to reflect new architecture:</p>
+  <ul>
+    <li><strong><code>06-implementation-plan.md</code></strong>: Added learning entry documenting the refactoring decision, file structure, and self-contained assets pattern</li>
+    <li><strong>GitHub Issue #13</strong>: Closed with verification results</li>
+    <li><strong><code>CLAUDE.md</code></strong>: File structure section still accurate (references display rendering code organization)</li>
+  </ul>
+
+  <h2>Commit</h2>
+
+  <pre><code>commit 916d8ea
+Author: Sud0-AP
+Date:   Sat Sep 14 16:18:42 2026
+
+    Refactor: Split display rendering into modular per-screen architecture
+
+    - One file per screen under src/display/screens/
+    - Common assets in assets_common.h/cpp with large arrays in .inc files
+    - Reusable UI primitives (topbar, scrollbar) in ui_primitives.h/cpp
+    - Unified screen rendering interface in screens.h
+    - Self-contained screen-specific assets (brightness slider in settings_brightness.cpp)
+    - Fully verified with successful build (pio run) and passing unit tests</code></pre>
+
+  <h2>Next Steps</h2>
+
+  <p>Continue Phase 1 implementation with the remaining 5 screens:</p>
+  <ul>
+    <li><strong>Home Screen</strong> (3 variants: Combined, Music Only, Workout Only)</li>
+    <li><strong>Music Queue</strong></li>
+    <li><strong>Guided Logging</strong> (5 screens: Overview + in-session screens 1-4)</li>
+  </ul>
+
+  <p>Each new screen follows the established pattern: create <code>screens/<name>.cpp</code>, declare in <code>screens.h</code>, wire routing in <code>display_task.cpp</code>. Screen-specific assets embed directly in the screen file; common elements call <code>draw_topbar()</code> / <code>draw_scrollbar_thumb()</code>.</p>
+</div>

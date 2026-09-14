@@ -1,0 +1,688 @@
+<title>Firmware Screen Refactoring Guide</title>
+
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #151515;
+  --surface-hi: #1f1f1f;
+  --text: #e8e8e8;
+  --text-dim: #9a9a9a;
+  --accent: #e33f7f;
+  --accent-dim: #992650;
+  --code-bg: #0d0d0d;
+  --border: #2a2a2a;
+  --success: #4ade80;
+  --warning: #fbbf24;
+}
+
+:root:not([data-theme="dark"]) {
+  --bg: #ffffff;
+  --surface: #f7f7f7;
+  --surface-hi: #efefef;
+  --text: #1a1a1a;
+  --text-dim: #666666;
+  --accent: #e33f7f;
+  --accent-dim: #f47ba6;
+  --code-bg: #f5f5f5;
+  --border: #e0e0e0;
+  --success: #16a34a;
+  --warning: #d97706;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #ffffff;
+    --surface: #f7f7f7;
+    --surface-hi: #efefef;
+    --text: #1a1a1a;
+    --text-dim: #666666;
+    --accent: #e33f7f;
+    --accent-dim: #f47ba6;
+    --code-bg: #f5f5f5;
+    --border: #e0e0e0;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--text-dim);
+  margin-bottom: 3rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 3rem 0 1rem;
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem;
+  color: var(--accent);
+}
+
+p {
+  margin-bottom: 1rem;
+  max-width: 70ch;
+}
+
+ul, ol {
+  margin: 1rem 0 1rem 1.5rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: var(--code-bg);
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  line-height: 1.5;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+.tree {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.tree .dir { color: var(--accent); font-weight: 600; }
+.tree .file { color: var(--text); }
+.tree .comment { color: var(--text-dim); }
+
+.callout {
+  background: var(--surface);
+  border-left: 4px solid var(--accent);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+.callout-title {
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.warning {
+  border-left-color: var(--warning);
+}
+
+.warning .callout-title {
+  color: var(--warning);
+}
+
+.success {
+  border-left-color: var(--success);
+}
+
+.success .callout-title {
+  color: var(--success);
+}
+
+.step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.step-number {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 2rem;
+  font-weight: 700;
+  margin-right: 0.75rem;
+}
+
+.step-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: var(--surface);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  background: var(--surface-hi);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  background: var(--accent-dim);
+  color: white;
+  padding: 0.25rem 0.625rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+</style>
+
+<div class="container">
+  <h1>Firmware Screen Refactoring Guide</h1>
+  <p class="subtitle">Clean architecture for ESP32 display rendering — one file per screen, centralized assets, scalable for Phase 1 and beyond</p>
+
+  <div class="callout">
+    <div class="callout-title">📋 Refactoring Summary</div>
+    <p><strong>Problem:</strong> All screen rendering code lives in one 416-line <code>lopaka_generated.cpp</code> file, making it hard to manage and difficult for coding agents to navigate.</p>
+    <p><strong>Solution:</strong> Split into one file per screen + centralized asset library + shared UI primitives. Clean separation, agent-friendly, scales to 9+ screens.</p>
+  </div>
+
+  <h2>Target Structure</h2>
+
+  <div class="tree">
+<span class="dir">Hardware/Firmware/src/display/</span>
+├── <span class="file">display_task.h</span>         <span class="comment">// Display task interface (unchanged)</span>
+├── <span class="file">display_task.cpp</span>       <span class="comment">// Routing logic (minimal edits)</span>
+├── <span class="file">display_events.h</span>       <span class="comment">// Event types (unchanged)</span>
+├── <span class="file">assets.h</span>               <span class="comment">// All Lopaka bitmaps + constants</span>
+├── <span class="file">assets.cpp</span>             <span class="comment">// Asset definitions</span>
+├── <span class="file">ui_primitives.h</span>        <span class="comment">// Shared rendering functions</span>
+├── <span class="file">ui_primitives.cpp</span>      <span class="comment">// Top bar, scrollbar, etc.</span>
+├── <span class="file">screens.h</span>              <span class="comment">// All screen function declarations</span>
+└── <span class="dir">screens/</span>                     <span class="comment">// One file per screen</span>
+    ├── <span class="file">main_menu.cpp</span>
+    ├── <span class="file">settings_main.cpp</span>
+    ├── <span class="file">settings_display.cpp</span>
+    └── <span class="file">settings_brightness.cpp</span>
+  </div>
+
+  <h2>Step-by-Step Implementation</h2>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">1</span>Create Directory Structure</div>
+    <pre><code>mkdir -p Hardware/Firmware/src/display/screens</code></pre>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">2</span>Rename lopaka_generated.cpp → assets.cpp</div>
+    <p>This file becomes the central asset library. Keep only the asset definitions (bitmaps, constants, color defines), remove all rendering functions.</p>
+    <pre><code>mv Hardware/Firmware/src/display/lopaka_generated.cpp \
+   Hardware/Firmware/src/display/assets.cpp</code></pre>
+    <p><strong>Edit assets.cpp:</strong> Delete all function implementations (<code>draw_topbar()</code>, <code>draw_main_menu_full()</code>, etc.), keep only:</p>
+    <ul>
+      <li>All <code>PROGMEM</code> bitmap arrays</li>
+      <li>Color constants (<code>COLOR_BG</code>, <code>COLOR_ACCENT</code>, etc.)</li>
+      <li>Layout constants (<code>ITEM_Y_POSITIONS</code>, <code>TEXT_Y_POSITIONS</code>, etc.)</li>
+      <li>Label arrays (<code>MENU_LABELS</code>, <code>SETTINGS_MAIN_LABELS</code>, etc.)</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">3</span>Create assets.h</div>
+    <p>Declares all assets so screen files can access them.</p>
+    <pre><code>#ifndef ASSETS_H
+#define ASSETS_H
+
+#include &lt;Arduino.h&gt;
+
+// ===== COLOR CONSTANTS =====
+extern const uint16_t COLOR_BG;
+extern const uint16_t COLOR_ACCENT;
+extern const uint16_t COLOR_ACCENT_NET;
+extern const uint16_t COLOR_GREY_TRACK;
+extern const uint16_t COLOR_GREY_INNER;
+extern const uint16_t COLOR_TEXT_UNSEL;
+extern const uint16_t COLOR_TEXT_SEL;
+
+// ===== LAYOUT CONSTANTS =====
+extern const uint16_t ITEM_Y_POSITIONS[3];
+extern const uint16_t TEXT_Y_POSITIONS[3];
+extern const uint16_t ICON_Y_POSITIONS[3];
+extern const uint16_t THUMB_Y_POSITIONS[3];
+
+// ===== LABELS =====
+extern const char* MENU_LABELS[3];
+extern const char* SETTINGS_MAIN_LABELS[3];
+extern const char* SETTINGS_DISPLAY_LABELS[3];
+
+// ===== TOP BAR ASSETS =====
+extern const unsigned char image_topbar_back_bits[];
+extern const unsigned char image_topbar_battery_case_bits[];
+extern const unsigned char image_topbar_info_bits[];
+extern const unsigned char image_topbar_network_connected_bits[];
+extern const uint16_t image_topbar_margins_pixels[];
+
+// ===== MAIN MENU ASSETS =====
+extern const unsigned char image_scrollbar_arrow_dn_large[];
+extern const unsigned char image_scrollbar_arrow_up_large[];
+extern const unsigned char image_scrollbar_arrow_dn_small[];
+extern const unsigned char image_scrollbar_arrow_up_small[];
+extern const unsigned char image_menu_selection_pill_bits[];
+
+// ===== SETTINGS ASSETS =====
+extern const unsigned char image_settings_selection_pill_bits[];
+
+// ===== BRIGHTNESS SCREEN ASSETS =====
+extern const unsigned char image_brightness_clock_quarters_bits[];
+extern const unsigned char image_brightness_slider_outline_bits[];
+extern const unsigned char image_brightness_settings_gear_bits[];
+extern const unsigned char image_brightness_headphones_bits[];
+extern const unsigned char image_brightness_smartphone_bits[];
+extern const unsigned char image_brightness_down_unselected_bits[];
+extern const unsigned char image_brightness_down_selected_bits[];
+extern const unsigned char image_brightness_up_unselected_bits[];
+extern const unsigned char image_brightness_up_selected_bits[];
+extern const unsigned char image_brightness_voltage_bits[];
+extern const unsigned char image_brightness_frost_bits[];
+
+#endif // ASSETS_H</code></pre>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-title">⚠️ Managing Large Assets</div>
+    <p>As you add more screens, <code>assets.cpp</code> will grow (potentially 1000+ lines). Keep it manageable:</p>
+    <ul>
+      <li>Use clear section comments: <code>// ===== SCREEN NAME ASSETS =====</code></li>
+      <li>Group related assets together (all brightness screen bitmaps in one block)</li>
+      <li>Consider splitting into <code>assets_common.cpp</code> (top bar, scrollbar) + per-screen asset files if it exceeds ~1500 lines</li>
+      <li>The <code>assets.h</code> header stays clean — only declarations, no bloat</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">4</span>Create ui_primitives.h</div>
+    <pre><code>#ifndef UI_PRIMITIVES_H
+#define UI_PRIMITIVES_H
+
+#include &lt;Arduino.h&gt;
+#include &lt;TFT_eSPI.h&gt;
+
+// Global TFT instance (defined in display_task.cpp)
+extern TFT_eSPI tft;
+
+// Shared rendering functions
+void draw_topbar();
+void draw_scrollbar_thumb(uint8_t selection_index);
+
+#endif // UI_PRIMITIVES_H</code></pre>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">5</span>Create ui_primitives.cpp</div>
+    <p>Extract shared rendering functions from the old <code>lopaka_generated.cpp</code>.</p>
+    <pre><code>#include "ui_primitives.h"
+#include "assets.h"
+
+void draw_topbar() {
+    // Layer 1: Margins/background frame drawn FIRST
+    tft.pushImage(0, 0, 320, 21, image_topbar_margins_pixels);
+
+    // Battery level fill (75% default for Phase 1)
+    tft.fillRect(296, 5, 12, 9, COLOR_ACCENT);
+
+    // Battery case outline
+    tft.drawBitmap(286, 2, image_topbar_battery_case_bits, 24, 16, COLOR_GREY_TRACK);
+
+    // Time text
+    tft.setTextColor(COLOR_ACCENT);
+    tft.setTextSize(1);
+    tft.drawString("12:23 PM", 75, 6);
+
+    // Back icon
+    tft.drawBitmap(10, 5, image_topbar_back_bits, 10, 8, COLOR_ACCENT);
+
+    // Info icon
+    tft.drawBitmap(45, 5, image_topbar_info_bits, 7, 8, COLOR_ACCENT);
+
+    // Day & date text
+    tft.drawString("Monday: 14th May", 140, 6);
+
+    // Network connected icon
+    tft.drawBitmap(252, 3, image_topbar_network_connected_bits, 15, 14, COLOR_ACCENT_NET);
+}
+
+void draw_scrollbar_thumb(uint8_t sel) {
+    uint16_t ty = THUMB_Y_POSITIONS[sel];
+    tft.fillRect(303, ty, 9, 15, COLOR_ACCENT);
+
+    if (sel == 0) {
+        tft.drawLine(304, 62, 310, 62, COLOR_GREY_INNER);
+        tft.drawLine(304, 65, 310, 65, COLOR_GREY_INNER);
+        tft.drawLine(304, 68, 310, 68, COLOR_GREY_INNER);
+        tft.drawLine(304, 71, 310, 71, COLOR_GREY_INNER);
+    } else if (sel == 1) {
+        tft.drawBitmap(304, 109, image_Layer_23_bits, 7, 10, COLOR_GREY_TRACK);
+    } else {
+        tft.drawLine(304, 170, 310, 170, COLOR_GREY_INNER);
+        tft.drawLine(304, 173, 310, 173, COLOR_GREY_INNER);
+        tft.drawLine(304, 176, 310, 176, COLOR_GREY_INNER);
+        tft.drawLine(304, 179, 310, 179, COLOR_GREY_INNER);
+    }
+}</code></pre>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">6</span>Create screens.h</div>
+    <p>The unified interface for all screen rendering functions.</p>
+    <pre><code>#ifndef SCREENS_H
+#define SCREENS_H
+
+#include &lt;Arduino.h&gt;
+
+// Main Menu
+void draw_main_menu_full(uint8_t selection_index);
+void draw_main_menu_update_selection(uint8_t old_index, uint8_t new_index);
+
+// Settings — Main
+void draw_settings_main(uint8_t selection_index);
+void draw_settings_main_update_selection(uint8_t old_index, uint8_t new_index);
+
+// Settings — Display
+void draw_settings_display(uint8_t selection_index);
+void draw_settings_display_update_selection(uint8_t old_index, uint8_t new_index);
+
+// Settings — Brightness
+void draw_settings_brightness(uint8_t brightness_value);
+void draw_settings_brightness_update_value(uint8_t old_value, uint8_t new_value);
+
+#endif // SCREENS_H</code></pre>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">7</span>Create Screen Files</div>
+    <p>Extract each screen's rendering code into its own file in <code>screens/</code>.</p>
+
+    <h3>screens/main_menu.cpp</h3>
+    <pre><code>#include "../screens.h"
+#include "../assets.h"
+#include "../ui_primitives.h"
+#include &lt;TFT_eSPI.h&gt;
+
+extern TFT_eSPI tft;
+
+static void draw_menu_item(uint8_t index, bool is_selected) {
+    uint16_t pill_y = ITEM_Y_POSITIONS[index];
+    uint16_t icon_y = ICON_Y_POSITIONS[index];
+    uint16_t text_y = TEXT_Y_POSITIONS[index];
+
+    if (is_selected) {
+        tft.drawBitmap(20, pill_y, image_menu_selection_pill_bits, 260, 72, COLOR_ACCENT);
+        tft.setTextColor(COLOR_TEXT_SEL);
+    } else {
+        tft.fillRect(20, pill_y, 260, 72, COLOR_BG);
+        tft.setTextColor(COLOR_TEXT_UNSEL);
+    }
+
+    // Animation icon placeholder (static frame 0)
+    tft.drawRect(27, icon_y, 48, 48, COLOR_GREY_INNER);
+
+    // Item label
+    tft.setTextSize(2);
+    tft.drawString(MENU_LABELS[index], 110, text_y);
+}
+
+void draw_main_menu_full(uint8_t selection_index) {
+    if (selection_index > 2) selection_index = 0;
+
+    tft.fillScreen(COLOR_BG);
+    draw_topbar();
+
+    // Scrollbar track
+    tft.fillRect(302, 32, 12, 194, COLOR_GREY_TRACK);
+    tft.fillRect(304, 34, 7, 190, COLOR_GREY_INNER);
+    tft.drawBitmap(301, 24, image_scrollbar_arrow_up_large, 14, 8, COLOR_GREY_TRACK);
+    tft.drawBitmap(304, 30, image_scrollbar_arrow_up_small, 7, 4, COLOR_GREY_INNER);
+    tft.drawBitmap(301, 226, image_scrollbar_arrow_dn_large, 14, 8, COLOR_GREY_TRACK);
+    tft.drawBitmap(304, 224, image_scrollbar_arrow_dn_small, 7, 4, COLOR_GREY_INNER);
+
+    // Draw all 3 items
+    for (uint8_t i = 0; i < 3; i++) {
+        draw_menu_item(i, i == selection_index);
+    }
+
+    draw_scrollbar_thumb(selection_index);
+}
+
+void draw_main_menu_update_selection(uint8_t old_index, uint8_t new_index) {
+    if (old_index == new_index) return;
+    if (old_index > 2) old_index = 0;
+    if (new_index > 2) new_index = 0;
+
+    draw_menu_item(old_index, false);
+    draw_menu_item(new_index, true);
+
+    uint16_t old_ty = THUMB_Y_POSITIONS[old_index];
+    tft.fillRect(303, old_ty, 9, 15, COLOR_GREY_INNER);
+    draw_scrollbar_thumb(new_index);
+}</code></pre>
+
+    <p>Create similar files for the other 3 screens (<code>settings_main.cpp</code>, <code>settings_display.cpp</code>, <code>settings_brightness.cpp</code>) by extracting their respective functions from the old <code>lopaka_generated.cpp</code>.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">8</span>Update display_task.cpp</div>
+    <p>Replace the old <code>lopaka_generated.h</code> include with the new headers.</p>
+    <pre><code>// OLD:
+// #include "lopaka_generated.h"
+
+// NEW:
+#include "screens.h"
+#include "ui_primitives.h"
+
+// All draw_* function calls remain unchanged!</code></pre>
+    <p>The routing logic in <code>display_task.cpp</code> stays exactly the same — you're just swapping where the functions are declared.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">9</span>Update PlatformIO Build</div>
+    <p>PlatformIO automatically discovers <code>.cpp</code> files in <code>src/</code> and its subdirectories, so the new structure should compile without <code>platformio.ini</code> changes. Verify:</p>
+    <pre><code>cd Hardware/Firmware
+pio run</code></pre>
+    <p>If you see linker errors about missing symbols, check that:</p>
+    <ul>
+      <li>All <code>.cpp</code> files are in <code>src/display/</code> or <code>src/display/screens/</code></li>
+      <li><code>extern</code> declarations in <code>assets.h</code> match the actual definitions in <code>assets.cpp</code></li>
+      <li><code>screens.h</code> declares all functions implemented in the screen <code>.cpp</code> files</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="step-title"><span class="step-number">10</span>Delete Old File</div>
+    <pre><code>rm Hardware/Firmware/src/display/lopaka_generated.h</code></pre>
+    <p>The old header is no longer needed — <code>screens.h</code> + <code>assets.h</code> + <code>ui_primitives.h</code> replace it.</p>
+  </div>
+
+  <h2>Testing the Refactor</h2>
+
+  <div class="callout success">
+    <div class="callout-title">✅ Verification Checklist</div>
+    <ol>
+      <li><strong>Compiles clean:</strong> <code>pio run</code> succeeds with zero warnings</li>
+      <li><strong>Flashes successfully:</strong> <code>pio run --target upload</code> works</li>
+      <li><strong>All 4 screens render correctly:</strong> Navigate Main Menu → Settings—Main → Settings—Display → Settings—Brightness and verify each matches the Lopaka reference PNGs</li>
+      <li><strong>Selection updates work:</strong> Encoder rotation updates selection pills with zero flicker</li>
+      <li><strong>Brightness slider animates:</strong> Settings—Brightness value changes update the slider fill + button highlights correctly</li>
+    </ol>
+  </div>
+
+  <h2>File Size Reference</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Approx Lines</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>assets.cpp</code></td>
+        <td>~300</td>
+        <td>All Lopaka bitmaps + constants</td>
+      </tr>
+      <tr>
+        <td><code>assets.h</code></td>
+        <td>~60</td>
+        <td>Asset declarations</td>
+      </tr>
+      <tr>
+        <td><code>ui_primitives.cpp</code></td>
+        <td>~50</td>
+        <td>Top bar + scrollbar functions</td>
+      </tr>
+      <tr>
+        <td><code>ui_primitives.h</code></td>
+        <td>~12</td>
+        <td>Primitive function declarations</td>
+      </tr>
+      <tr>
+        <td><code>screens.h</code></td>
+        <td>~20</td>
+        <td>All screen function declarations</td>
+      </tr>
+      <tr>
+        <td><code>main_menu.cpp</code></td>
+        <td>~80</td>
+        <td>Main Menu rendering</td>
+      </tr>
+      <tr>
+        <td><code>settings_main.cpp</code></td>
+        <td>~70</td>
+        <td>Settings—Main rendering</td>
+      </tr>
+      <tr>
+        <td><code>settings_display.cpp</code></td>
+        <td>~70</td>
+        <td>Settings—Display rendering</td>
+      </tr>
+      <tr>
+        <td><code>settings_brightness.cpp</code></td>
+        <td>~140</td>
+        <td>Settings—Brightness rendering</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Adding New Screens</h2>
+
+  <p>Once the refactor is complete, adding a new screen becomes a 4-step process:</p>
+
+  <ol>
+    <li><strong>Export from Lopaka:</strong> Get the <code>.txt</code> + <code>.png</code> for the new screen</li>
+    <li><strong>Append assets to <code>assets.cpp</code>:</strong> Copy bitmap arrays + constants, add <code>extern</code> declarations to <code>assets.h</code></li>
+    <li><strong>Create <code>screens/new_screen.cpp</code>:</strong> Implement <code>draw_new_screen_full()</code> + any update functions</li>
+    <li><strong>Declare in <code>screens.h</code>:</strong> Add function prototypes so <code>display_task.cpp</code> can call them</li>
+  </ol>
+
+  <div class="callout">
+    <div class="callout-title">🎯 Benefits</div>
+    <ul>
+      <li><strong>Agent-friendly:</strong> "Modify the brightness screen" → agent opens <code>settings_brightness.cpp</code> directly</li>
+      <li><strong>Scales cleanly:</strong> 9 Phase 1 screens = 9 files, each ~60-150 lines</li>
+      <li><strong>Clear ownership:</strong> Each screen file owns its rendering logic, no hunting through 1000+ line monoliths</li>
+      <li><strong>Build-time validation:</strong> Missing asset? Linker error points to exact <code>extern</code> declaration</li>
+      <li><strong>Easy diffing:</strong> Git history shows per-screen changes, not "modified lopaka_generated.cpp" for every change</li>
+    </ul>
+  </div>
+
+  <h2>Common Pitfalls</h2>
+
+  <div class="callout warning">
+    <div class="callout-title">⚠️ Watch Out For</div>
+    <ul>
+      <li><strong>Missing <code>extern</code> in <code>assets.h</code>:</strong> If a screen file references a bitmap but you forgot to declare it in <code>assets.h</code>, you'll get a linker error. Add the <code>extern</code> declaration.</li>
+      <li><strong>Wrong <code>extern TFT_eSPI tft;</code>:</strong> Each screen <code>.cpp</code> file needs <code>extern TFT_eSPI tft;</code> at the top to access the global TFT instance (defined in <code>display_task.cpp</code>).</li>
+      <li><strong>Forgetting to update <code>screens.h</code>:</strong> If you add a new screen function but forget to declare it in <code>screens.h</code>, <code>display_task.cpp</code> can't see it.</li>
+      <li><strong>Asset name collisions:</strong> If two screens export bitmaps with the same variable name (e.g., both have <code>image_Layer_1_bits</code>), rename one to be screen-specific (e.g., <code>image_brightness_layer_1_bits</code>).</li>
+    </ul>
+  </div>
+
+  <h2>Next Steps</h2>
+
+  <p>After completing this refactor:</p>
+  <ol>
+    <li>Commit the changes: <code>git add -A && git commit -m "Refactor: split screen rendering into separate files"</code></li>
+    <li>Continue Phase 1 implementation with the remaining screens (Home, Music Queue, Guided Logging)</li>
+    <li>Each new screen follows the same pattern: asset library → screen file → declaration in <code>screens.h</code></li>
+  </ol>
+</div>

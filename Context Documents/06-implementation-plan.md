@@ -316,4 +316,13 @@ coding agent needs to make.
   provides the pixel bitmap for disconnected WiFi/cellular, replacing the connected icon.
 - **Encoder sensitivity and direction**: Decoded as 1 physical detent = 1 event (no 2-detent
   accumulator); direction inverted to match hardware layout.
+- **Firmware screen rendering refactored** (Sept 14, 2026): Split monolithic 416-line
+  `lopaka_generated.cpp` into modular per-screen architecture. One file per screen under
+  `src/display/screens/` (main_menu, settings_main, settings_display, settings_brightness),
+  common assets in `assets_common.cpp/h` with large bitmap arrays extracted to `.inc` files
+  (topbar margins, selection pills), reusable UI primitives (topbar, scrollbar thumb) in
+  `ui_primitives.cpp/h`, unified rendering interface in `screens.h`. Each screen file is
+  self-contained with its specific assets (e.g., brightness slider bitmaps live in
+  `settings_brightness.cpp`). Verified with clean PlatformIO build and passing unit tests.
+  Better asset organization from the start prevents 1500+ line monolith growth.
 
