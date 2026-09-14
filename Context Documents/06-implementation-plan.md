@@ -77,11 +77,10 @@ confirmed on physical arrival, not a design decision to make in advance.
 - [ ] 3-way switch state detection confirmed for all 3 positions (deferred pre-pivot,
       still outstanding)
 - [x] Arduino-ESP32 project structure set up (migrated from ESP-IDF native, PlatformIO configured at `Hardware/Firmware/`)
-- [ ] FreeRTOS tasks scaffolded: display, input, network, app-logic, storage (see
-      `01-hardware-firmware.md` for the task responsibilities — these are already
-      specified, not to be redesigned here)
-- [ ] `draw_screen(screen_id, state)` interface defined (per the extensibility note in
-      `01-hardware-firmware.md`)
+- [x] FreeRTOS tasks scaffolded: display, input, app-logic queues and tasks running
+- [x] Top Bar helper extracted from Lopaka export with margins, network (connected/disconnected), battery case/fill (Ticket #3)
+- [x] Main Menu wired with exact Lopaka exports, flicker-free partial updates on encoder selection, layer order verified (Ticket #3)
+- [ ] `draw_screen(screen_id, state)` interface expanded for remaining screens (Tickets #4-#11)
 - [ ] Lopaka screens re-mocked for 240×320 (**user-authored in Lopaka, exported as
       TFT_eSPI code** — the coding agent's job is wiring the exported drawing code
       behind `draw_screen()`, not designing layout) per the per-screen behavior spec in
@@ -89,7 +88,7 @@ confirmed on physical arrival, not a design decision to make in advance.
       windowed-list-pinned-edge, fixed-slot clamping — working end to end on dummy data;
       Settings — Network and Device Claim/Setup are still open — see their entries in
       `02-hardware-ui.md` — and can be wired up once you've designed them)
-- [ ] Animated selection icon working in the render loop
+- [ ] Animated selection icon working in the render loop (Ticket #9)
 - [ ] All 5 buttons + encoder + 3-way switch driving real navigation exactly per the
       global input mapping and per-screen spec in `02-hardware-ui.md` (Hype/Rest as
       Back/Info everywhere except Home, where they're stubbed — no real trigger yet,
@@ -305,3 +304,16 @@ coding agent needs to make.
   section landing view, plus per-exercise/per-workout trend graphs on click-through.
   Needed so auto-applied progression suggestions are ready before the *next* session,
   not just whenever the web app happens to be opened. See `04-workout-logging.md`.
+- **Lopaka pre-implementation analysis and check-in protocol**: Before coding a new screen,
+  thoroughly inspect all Lopaka `.txt` and `.png` assets, verify layer orders and diffs,
+  and stop to ask the user clarifying questions about any confusing elements. See memory.
+- **Flicker-free dirty-rect rendering**: Selection updates on menus must never call
+  `fillScreen()` — only clear and redraw the old item, new item, and scrollbar thumb to
+  eliminate screen flashing. Full redraw only on screen transitions.
+- **Display text size reset rule**: Always reset `tft.setTextSize(1)` and `tft.setTextDatum(TL_DATUM)`
+  at the start of every screen render to prevent global text scaling leaks into other screens.
+- **Top bar disconnected state asset**: `Hardware/Lopaka Screens/Top Bar/network_not_connected.png`
+  provides the pixel bitmap for disconnected WiFi/cellular, replacing the connected icon.
+- **Encoder sensitivity and direction**: Decoded as 1 physical detent = 1 event (no 2-detent
+  accumulator); direction inverted to match hardware layout.
+
