@@ -42,11 +42,16 @@ static void display_task_loop(void* pvParameters) {
 
     display_task_render_boot_screen();
 
+    // Track active screen and selection to enable flicker-free in-place updates
+    uint8_t rendered_screen_id = SCREEN_HOME;
+    uint8_t rendered_selection_index = 0;
+
     DisplayEvent evt;
     for (;;) {
         if (xQueueReceive(g_display_queue, &evt, portMAX_DELAY) == pdTRUE) {
             switch (evt.type) {
                 case DisplayEventType::DISPLAY_TEST_PATTERN:
+                    rendered_screen_id = SCREEN_HOME;
                     display_task_render_boot_screen();
                     break;
                 case DisplayEventType::DISPLAY_REFRESH_NEEDED: {
@@ -57,15 +62,23 @@ static void display_task_loop(void* pvParameters) {
                     tft.setTextDatum(TL_DATUM);
 
                     if (nav_state.screen_id == SCREEN_MAIN_MENU) {
-                        tft.fillScreen(0x0801); // Lopaka background colour
-                        switch (nav_state.selection_index) {
-                            case 0:  draw_menu_1(); break;
-                            case 1:  draw_menu_2(); break;
-                            default: draw_menu_3(); break;
+                        if (rendered_screen_id != SCREEN_MAIN_MENU) {
+                            // First time entering Main Menu: full screen redraw
+                            draw_main_menu_full(nav_state.selection_index);
+                            Serial.printf("[DISPLAY] Full render Main Menu, selection=%u\n",
+                                          nav_state.selection_index);
+                        } else if (rendered_selection_index != nav_state.selection_index) {
+                            // Already on Main Menu, only selection changed: fast in-place update (NO screen clear, zero flicker)
+                            draw_main_menu_update_selection(rendered_selection_index, nav_state.selection_index);
+                            Serial.printf("[DISPLAY] Fast selection update %u -> %u\n",
+                                          rendered_selection_index, nav_state.selection_index);
                         }
-                        Serial.printf("[DISPLAY] Rendered Main Menu, selection=%u\n",
-                                      nav_state.selection_index);
+                        rendered_screen_id = SCREEN_MAIN_MENU;
+                        rendered_selection_index = nav_state.selection_index;
                     } else {
+                        // Returning to Home or other unhandled screen
+                        rendered_screen_id = nav_state.screen_id;
+                        rendered_selection_index = nav_state.selection_index;
                         Serial.printf("[DISPLAY] Screen %s not yet implemented\n",
                                       screen_id_to_string(nav_state.screen_id));
                         display_task_render_boot_screen();
