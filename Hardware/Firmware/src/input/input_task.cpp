@@ -48,9 +48,8 @@ static uint8_t read_pcf8574() {
 static void input_task_loop(void* pvParameters) {
     Serial.println("[INPUT] Input task started on Core " + String(xPortGetCoreID()));
 
-    // 2-detent accumulator state
+    // Detent accumulator state
     long processed_raw_pos = 0;
-    int accumulated_detents = 0;
 
     // Expander button state & debounce
     uint8_t last_expander_sample = 0xFF;
@@ -64,7 +63,8 @@ static void input_task_loop(void* pvParameters) {
 
     for (;;) {
         // ----------------------------------------------------
-        // 1. Process Encoder Rotation with 2-Detent Accumulator
+        // 1. Process Encoder Rotation — 1 physical detent = 1 event
+        //    Direction is SWAPPED (physical CCW = semantic CW) per hardware.
         // ----------------------------------------------------
         long current_raw;
         noInterrupts();
@@ -73,39 +73,19 @@ static void input_task_loop(void* pvParameters) {
 
         long diff = current_raw - processed_raw_pos;
 
-        // 2 raw transitions = 1 physical detent
+        // 2 raw ISR transitions = 1 physical detent
         while (diff >= 2) {
             diff -= 2;
             processed_raw_pos += 2;
-
-            // Reset accumulator if direction reversed
-            if (accumulated_detents < 0) {
-                accumulated_detents = 0;
-            }
-            accumulated_detents++;
-
-            // 2 physical detents = 1 semantic event
-            if (accumulated_detents >= 2) {
-                post_input_event(InputEventType::ENCODER_CW);
-                accumulated_detents = 0;
-            }
+            // Hardware direction swapped: raw+ → semantic CCW
+            post_input_event(InputEventType::ENCODER_CCW);
         }
 
         while (diff <= -2) {
             diff += 2;
             processed_raw_pos -= 2;
-
-            // Reset accumulator if direction reversed
-            if (accumulated_detents > 0) {
-                accumulated_detents = 0;
-            }
-            accumulated_detents--;
-
-            // 2 physical detents = 1 semantic event
-            if (accumulated_detents <= -2) {
-                post_input_event(InputEventType::ENCODER_CCW);
-                accumulated_detents = 0;
-            }
+            // Hardware direction swapped: raw- → semantic CW
+            post_input_event(InputEventType::ENCODER_CW);
         }
 
         // ----------------------------------------------------

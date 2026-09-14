@@ -1,5 +1,7 @@
 #include "display_task.h"
+#include "lopaka_generated.h"
 #include "../config/pins.h"
+#include "../app/app_task.h"
 #include <Arduino.h>
 #include <SPI.h>
 #include <TFT_eSPI.h>
@@ -8,13 +10,15 @@
 #define COLOR_ACCENT    0xE33F // Project accent (magenta/purple in BGR mode)
 
 QueueHandle_t g_display_queue = nullptr;
-static TFT_eSPI tft = TFT_eSPI();
+TFT_eSPI tft = TFT_eSPI();  // Global TFT instance (extern declared in screens.h)
 
 void display_task_render_boot_screen() {
+    // Reset all TFT state that might have leaked from other screens
+    tft.setTextSize(1);       // Lopaka menu uses setTextSize(2) — reset to default
+    tft.setTextDatum(TL_DATUM);
     tft.fillScreen(COLOR_DARK_GREY);
 
     tft.setTextColor(TFT_WHITE, COLOR_DARK_GREY);
-    tft.setTextDatum(TL_DATUM);
     tft.drawString("Hello World!", 20, 30, 4);
 
     tft.setTextColor(COLOR_ACCENT, COLOR_DARK_GREY);
@@ -45,9 +49,29 @@ static void display_task_loop(void* pvParameters) {
                 case DisplayEventType::DISPLAY_TEST_PATTERN:
                     display_task_render_boot_screen();
                     break;
-                case DisplayEventType::DISPLAY_REFRESH_NEEDED:
-                    // Future tickets will call draw_screen(screen_id, state)
+                case DisplayEventType::DISPLAY_REFRESH_NEEDED: {
+                    const NavigationState& nav_state = app_get_current_nav_state();
+
+                    // Always reset text state before rendering any screen
+                    tft.setTextSize(1);
+                    tft.setTextDatum(TL_DATUM);
+
+                    if (nav_state.screen_id == SCREEN_MAIN_MENU) {
+                        tft.fillScreen(0x0801); // Lopaka background colour
+                        switch (nav_state.selection_index) {
+                            case 0:  draw_menu_1(); break;
+                            case 1:  draw_menu_2(); break;
+                            default: draw_menu_3(); break;
+                        }
+                        Serial.printf("[DISPLAY] Rendered Main Menu, selection=%u\n",
+                                      nav_state.selection_index);
+                    } else {
+                        Serial.printf("[DISPLAY] Screen %s not yet implemented\n",
+                                      screen_id_to_string(nav_state.screen_id));
+                        display_task_render_boot_screen();
+                    }
                     break;
+                }
                 default:
                     break;
             }
