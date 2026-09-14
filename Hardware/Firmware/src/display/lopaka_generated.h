@@ -14,6 +14,14 @@ void draw_main_menu_full(uint8_t selection_index);
 // Fast in-place selection change (no fillScreen, zero flicker — only updates moved items)
 void draw_main_menu_update_selection(uint8_t old_index, uint8_t new_index);
 
+// Settings screens (full renders with Top Bar)
+void draw_settings_main(uint8_t selection_index);
+void draw_settings_display(uint8_t selection_index);
+
+// Fast in-place selection updates for Settings screens (zero flicker)
+void draw_settings_main_update_selection(uint8_t old_index, uint8_t new_index);
+void draw_settings_display_update_selection(uint8_t old_index, uint8_t new_index);
+
 // Direct variant wrappers
 void draw_menu_1();
 void draw_menu_2();

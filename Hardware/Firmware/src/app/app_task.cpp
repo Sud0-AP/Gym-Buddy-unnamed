@@ -69,7 +69,7 @@ static void app_handle_input_event(const InputEvent& evt) {
                 break;
             }
             case InputEventType::ENCODER_CW: {
-                if (screen_id == SCREEN_MAIN_MENU) {
+                if (screen_id == SCREEN_MAIN_MENU || screen_id == SCREEN_SETTINGS_MAIN || screen_id == SCREEN_SETTINGS_DISPLAY) {
                     uint8_t next_sel = (current.selection_index + 1) % 3;
                     g_nav_stack.set_current_selection(next_sel);
                     log_nav_state("Nav selection");
@@ -78,7 +78,7 @@ static void app_handle_input_event(const InputEvent& evt) {
                 break;
             }
             case InputEventType::ENCODER_CCW: {
-                if (screen_id == SCREEN_MAIN_MENU) {
+                if (screen_id == SCREEN_MAIN_MENU || screen_id == SCREEN_SETTINGS_MAIN || screen_id == SCREEN_SETTINGS_DISPLAY) {
                     uint8_t prev_sel = (current.selection_index + 2) % 3;
                     g_nav_stack.set_current_selection(prev_sel);
                     log_nav_state("Nav selection");
@@ -87,9 +87,25 @@ static void app_handle_input_event(const InputEvent& evt) {
                 break;
             }
             case InputEventType::BUTTON_ENCODER_PRESS: {
-                Serial.printf("[APP] Encoder press on screen_id=%s, selection_index=%u\n",
-                              screen_id_to_string(screen_id),
-                              current.selection_index);
+                if (screen_id == SCREEN_MAIN_MENU && current.selection_index == 2) {
+                    // Main Menu → Settings selected: push Settings—Main
+                    NavigationState settings_state = { SCREEN_SETTINGS_MAIN, 0, 0 };
+                    if (g_nav_stack.push(settings_state)) {
+                        log_nav_state("Nav transition");
+                        notify_display_refresh();
+                    }
+                } else if (screen_id == SCREEN_SETTINGS_MAIN && current.selection_index == 0) {
+                    // Settings—Main → Display selected: push Settings—Display
+                    NavigationState settings_display_state = { SCREEN_SETTINGS_DISPLAY, 0, 0 };
+                    if (g_nav_stack.push(settings_display_state)) {
+                        log_nav_state("Nav transition");
+                        notify_display_refresh();
+                    }
+                } else {
+                    Serial.printf("[APP] Encoder press on screen_id=%s, selection_index=%u (no action)\n",
+                                  screen_id_to_string(screen_id),
+                                  current.selection_index);
+                }
                 break;
             }
             case InputEventType::BUTTON_REST_PRESS: {

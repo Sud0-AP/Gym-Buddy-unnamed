@@ -75,6 +75,32 @@ static void display_task_loop(void* pvParameters) {
                         }
                         rendered_screen_id = SCREEN_MAIN_MENU;
                         rendered_selection_index = nav_state.selection_index;
+                    } else if (nav_state.screen_id == SCREEN_SETTINGS_MAIN) {
+                        if (rendered_screen_id != SCREEN_SETTINGS_MAIN) {
+                            // First time entering Settings—Main: full screen redraw
+                            draw_settings_main(nav_state.selection_index);
+                            Serial.printf("[DISPLAY] Full render Settings—Main, selection=%u\n", nav_state.selection_index);
+                        } else if (rendered_selection_index != nav_state.selection_index) {
+                            // Already on Settings—Main, only selection changed: fast in-place update (zero flicker)
+                            draw_settings_main_update_selection(rendered_selection_index, nav_state.selection_index);
+                            Serial.printf("[DISPLAY] Fast Settings—Main selection update %u -> %u\n",
+                                          rendered_selection_index, nav_state.selection_index);
+                        }
+                        rendered_screen_id = SCREEN_SETTINGS_MAIN;
+                        rendered_selection_index = nav_state.selection_index;
+                    } else if (nav_state.screen_id == SCREEN_SETTINGS_DISPLAY) {
+                        if (rendered_screen_id != SCREEN_SETTINGS_DISPLAY) {
+                            // First time entering Settings—Display: full screen redraw
+                            draw_settings_display(nav_state.selection_index);
+                            Serial.printf("[DISPLAY] Full render Settings—Display, selection=%u\n", nav_state.selection_index);
+                        } else if (rendered_selection_index != nav_state.selection_index) {
+                            // Already on Settings—Display, only selection changed: fast in-place update (zero flicker)
+                            draw_settings_display_update_selection(rendered_selection_index, nav_state.selection_index);
+                            Serial.printf("[DISPLAY] Fast Settings—Display selection update %u -> %u\n",
+                                          rendered_selection_index, nav_state.selection_index);
+                        }
+                        rendered_screen_id = SCREEN_SETTINGS_DISPLAY;
+                        rendered_selection_index = nav_state.selection_index;
                     } else {
                         // Returning to Home or other unhandled screen
                         rendered_screen_id = nav_state.screen_id;
