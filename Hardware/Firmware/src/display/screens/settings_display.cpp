@@ -14,19 +14,19 @@ static void draw_settings_display_item(uint8_t index, bool is_selected) {
     uint16_t text_y = TEXT_Y_POSITIONS[index];
 
     if (is_selected) {
-        tft.drawBitmap(20, pill_y, image_settings_selection_pill_bits, 260, 72, COLOR_ACCENT);
+        tft.drawBitmap(10, pill_y, image_settings_selection_pill_bits, 260, 72, COLOR_ACCENT);
         tft.setTextColor(COLOR_TEXT_SEL);
     } else {
-        tft.fillRect(20, pill_y, 260, 72, COLOR_BG);
+        tft.fillRect(10, pill_y, 260, 72, COLOR_BG);
         tft.setTextColor(COLOR_TEXT_UNSEL);
     }
 
     // Animation icon placeholder (static frame 0)
-    tft.drawRect(27, icon_y, 48, 48, COLOR_GREY_INNER);
+    tft.drawRect(17, icon_y, 48, 48, COLOR_GREY_INNER);
 
     // Item label
     tft.setTextSize(2);
-    tft.drawString(SETTINGS_DISPLAY_LABELS[index], 110, text_y);
+    tft.drawString(SETTINGS_DISPLAY_LABELS[index], 100, text_y);
 }
 
 void draw_settings_display(uint8_t selection_index) {

@@ -72,8 +72,7 @@
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/list.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/esp_additions/freertos/task_snapshot.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/task.h \
- src/display/display_events.h src/display/lopaka_generated.h \
- .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/TFT_eSPI.h \
+ src/display/display_events.h src/display/screens.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp_arduino_version.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/semphr.h \
@@ -184,6 +183,8 @@
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_hw_support/include/soc/esp32/spiram.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/io_pin_remap.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
+ src/display/ui_primitives.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/TFT_eSPI.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Print.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src/SPI.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-spi.h \
