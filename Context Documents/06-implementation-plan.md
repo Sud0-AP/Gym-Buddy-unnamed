@@ -76,7 +76,7 @@ confirmed on physical arrival, not a design decision to make in advance.
       table now locked in `01-hardware-firmware.md`.
 - [ ] 3-way switch state detection confirmed for all 3 positions (deferred pre-pivot,
       still outstanding)
-- [ ] Arduino-ESP32 project structure set up (migrated from ESP-IDF native)
+- [x] Arduino-ESP32 project structure set up (migrated from ESP-IDF native, PlatformIO configured at `Hardware/Firmware/`)
 - [ ] FreeRTOS tasks scaffolded: display, input, network, app-logic, storage (see
       `01-hardware-firmware.md` for the task responsibilities — these are already
       specified, not to be redesigned here)

@@ -48,6 +48,62 @@ Architecture: `Device ↔ WiFi ↔ Firebase Cloud Functions ↔ Firestore/Spotif
 
 **Phase: 1 — Hardware bring-up completion + UI lock-in.**
 
+### Phase 1 Implementation Tickets
+
+Phase 1 has been broken down into **12 actionable vertical-slice tickets**, each delivering demoable end-to-end behavior. All tickets are published and ready for implementation.
+
+**Ticket Locations**:
+- **GitHub Issues**: [#1-#12](https://github.com/Sud0-AP/Gym-Buddy-unnamed/issues) — each labeled `ready-for-agent` with proper blocking dependencies
+- **Local Files**: `.scratch/phase1/issues/01-*.md` through `12-*.md` — full acceptance criteria per ticket
+- **Master Reference**: `docs/agents/TICKETS.md` — consolidated overview with quick summaries, implementation strategy, and cross-references
+
+**Implementation Workflow**:
+
+1. **Start with Ticket #1** (Project Scaffold + Display + Input Pipeline) — it has no blockers
+2. **Work linearly** #1 → #2 → #3 → ... → #12 — each ticket blocks the next
+3. **Per-ticket workflow**:
+   - Read the ticket (GitHub Issue or local `.md` file)
+   - Implement acceptance criteria
+   - Test on hardware (serial monitor + photographs)
+   - Mark checkboxes complete
+   - Move to next ticket
+4. **Reference `docs/agents/TICKETS.md`** for quick "what it delivers" summaries without opening full tickets
+
+**Ticket Overview** (see `TICKETS.md` for details):
+
+| # | Title | What It Delivers |
+|---|-------|------------------|
+| 01 | Project Scaffold + Display + Input | PlatformIO builds, Display shows "Hello World", Serial logs semantic events |
+| 02 | App-logic + Nav Stack | Nav stack manages Home → Main Menu (logged, not rendered yet) |
+| 03 | Top Bar + Main Menu | Main Menu renders on screen, encoder moves selection pill |
+| 04 | Settings—Main/Display + Hype-as-Back | Settings screens navigable, Hype=Back works |
+| 05 | Settings—Brightness | Encoder adjusts brightness 0-100 in real-time |
+| 06 | Settings—Hype&Rest + Storage NVS | Final Settings screen + Storage task NVS init |
+| 07 | Home Screen + Dummy State + Global Music | Home Screen (Combined) + global music buttons work everywhere |
+| 08 | Music Queue | Music Queue renders with dummy track list |
+| 09 | Animated Selection Icons | Main Menu items animate at 5fps, cancel on transition |
+| 10 | Guided Logging (Mock) | Logging screens 1,2,3,5 + screen 4 mock (not interactive yet) |
+| 11 | Guided Logging (Full Flow) | Screen 4 interactive + full workout start→complete flow |
+| 12 | Exit Criterion Verification | All 9 screens reachable, all 4 testing seams pass |
+
+**Testing Checkpoints** (per `docs/phase1-spec.md`):
+- **Seam 1 (Input → Queue)**: After #1 — verify semantic events log correctly
+- **Seam 2 (App-logic → Nav State)**: After #2, expanded #4-#11 — verify nav stack transitions
+- **Seam 3 (Rendering → Visual)**: After #3, every screen — photograph vs Lopaka `.png` references
+- **Seam 4 (Interaction Logic)**: After #3, every interactive screen — verify encoder/button behavior
+
+**Phase 1 Exit Criterion** (verified by Ticket #12):
+1. Every screen (9 total) reachable via physical inputs
+2. All screens render correctly (match Lopaka references, no layer-order bugs)
+3. Navigation works per spec (Hype=Back outside Home, encoder rotate/press, nav stack, selection memory)
+4. All dummy data renders correctly
+5. Hype/Rest dual-mode works (Home → Spotify dummy trigger, elsewhere → Back/Info)
+6. Global music buttons work everywhere (mutate dummy state without exiting screen)
+7. Animated selection icons work (200ms/frame, cancel on transition)
+8. All 4 testing seams pass
+
+**Current Status**: Phase 1 has been fully planned and broken into tickets. No tickets completed yet — start with #1.
+
 **What works** (carried over from pre-pivot prototype):
 - Rotary encoder wired to native GPIO (D6/D7), direction decode confirmed (single CHANGE-interrupt method)
 - IO expander (PCF8574T) confirmed at address 0x20
@@ -227,28 +283,89 @@ Everything else across all 7 docs is **locked** — if something isn't covered b
 
 ## 10. Phase 1 Hardware Bring-Up Checklist (Current Phase)
 
-From `Context Documents/06-implementation-plan.md`, Phase 1 section — this is what's actively being worked on:
+From `Context Documents/06-implementation-plan.md`, Phase 1 section — this is what's actively being worked on.
+
+**Implementation is now ticket-driven.** Do not use this checklist to guide day-to-day work — use the tickets instead (see Section 3 and `docs/agents/TICKETS.md`). This checklist maps to tickets as follows:
 
 **Already done**:
 - [x] Display driver confirmed (ST7789) + wiring + TFT_eSPI config locked
 - [x] Display rendering confirmed via bring-up test and first real Lopaka screen (Music Queue)
 
-**Remaining**:
-- [ ] 3-way switch state detection confirmed for all 3 positions (Off / On / Lock)
-- [ ] Arduino-ESP32 project structure set up (migrated from ESP-IDF native)
-- [ ] FreeRTOS tasks scaffolded: display, input, network, app-logic, storage (responsibilities in `01-hardware-firmware.md`)
-- [ ] `draw_screen(screen_id, state)` interface defined
-- [ ] Lopaka screens wired behind `draw_screen()` with dummy data (every screen in the tree except the 4 unmocked ones)
-- [ ] Animated selection icon working in the render loop
-- [ ] All 5 buttons + encoder + 3-way switch driving real navigation per `02-hardware-ui.md` global input mapping and per-screen spec
+**Remaining** (mapped to tickets):
+- [ ] Arduino-ESP32 project structure set up — **Ticket #1**
+- [ ] FreeRTOS tasks scaffolded: display, input, network, app-logic, storage — **Ticket #1**
+- [ ] `draw_screen(screen_id, state)` interface defined — **Ticket #3**
+- [ ] Lopaka screens wired behind `draw_screen()` with dummy data — **Tickets #3–#11**
+- [ ] Animated selection icon working in the render loop — **Ticket #9**
+- [ ] All 5 buttons + encoder driving real navigation per `02-hardware-ui.md` — **Tickets #2–#12**
+- [ ] 3-way switch state detection — **Deferred** (post-Phase-1, power management)
 
-**Exit criterion**: every screen in the tree is reachable and fully navigable with dummy data, using only the physical inputs, matching `02-hardware-ui.md` exactly.
+**Exit criterion**: every screen in the tree is reachable and fully navigable with dummy data, using only the physical inputs, matching `02-hardware-ui.md` exactly. Verified by **Ticket #12**.
 
-**Before starting Phase 2**: resolve the two remaining open decisions if they're still open (claim-token handoff mechanism, WiFi password handling for web-app-push path) — both are now locked as of the latest docs (device polling, transient relay only), so Phase 2 can start immediately once Phase 1 exits.
+**Before starting Phase 2**: both remaining open decisions are already locked (device polling for claim-token handoff, transient relay only for WiFi passwords). Phase 2 can start immediately once Ticket #12 exits.
 
 ---
 
-## 11. Agent skills
+## 11. Tool Documentation
+
+### Tool: Artifact
+
+Render an HTML or Markdown file to an Artifact — a default-private web page hosted on claude.ai that the user can later choose to share with their teammates. Use this when communicating visually would be clearer than terminal text. Publishing proactively is fine for your own work-product — artifacts start private. The exception is content that could mislead or cause harm if shared onward: anything imitating a real organization, person, or record, or content the user framed as sensitive. Build those as files, and let the user decide whether they get a URL.
+
+A finished deliverable with an audience — a report for a team, a plan other people will follow, a document meant as a reference — is not fully delivered while it lives only in terminal scrollback or a local file. Finishing such work includes publishing it as an artifact and handing the user the link, so they have a private page ready to share when they choose.
+
+**Before writing the file — HTML and Markdown alike — you MUST load the `artifact-design` skill** to calibrate how much design investment this particular request warrants. Format is part of that decision: choose Markdown because the deliverable calls for it, never for speed. Then write the content to a file (via Write/Edit) and call Artifact with its path.
+
+**Key capabilities**: Multi-file support (`files` map for separate CSS/JS/data/images), update existing (`url` parameter), runtime capabilities (shared database, file uploads, user identity via `artifact-capabilities` skill), comments & replies (`action: "comments"/"reply"`).
+
+**Critical constraints**: Self-contained only (strict CSP blocks external hosts except Google Fonts), 16MB page limit, theme-aware (design for light and dark), responsive (no horizontal body scroll), favicon required (1-2 emoji, keep stable), title (short noun phrase 2-4 words, distinctive).
+
+**Common actions**:
+- Publish: `Artifact({file_path, description, favicon, title?})`
+- Update: `Artifact({file_path, url, description, favicon})`
+- List artifacts: `Artifact({action: "list", scope: "mine"})`
+- Comments: `Artifact({action: "comments", url})`
+- Reply: `Artifact({action: "reply", url, thread_id, text})`
+- Database ops: `Artifact({action: "read_db"/"write_db", url, db_op, ...})`
+
+---
+
+### Tool: Workflow
+
+Execute a workflow script that orchestrates multiple subagents deterministically. Workflows run in the background — this tool returns immediately with a task ID, and a `<task-notification>` arrives when the workflow completes. Use `/workflows` to watch live progress.
+
+A workflow structures work across many agents — to be comprehensive (decompose and cover in parallel), to be confident (independent perspectives and adversarial checks before committing), or to take on scale one context can't hold (migrations, audits, broad sweeps). The script is where you encode that structure: what fans out, what verifies, what synthesizes.
+
+**ONLY call this tool when the user has explicitly opted into multi-agent orchestration.** Workflows can spawn dozens of agents and consume a large amount of tokens; the user must request that scale, not have it inferred. Explicit opt-in means one of:
+- User included keyword "ultracode" in their prompt (system-reminder confirms it)
+- Ultracode is on for the session (system-reminder confirms it)
+- User directly asked you to run a workflow or use multi-agent orchestration ("use a workflow", "fan out agents", "orchestrate this with subagents")
+- User invoked a skill/slash command whose instructions tell you to call Workflow
+- User asked to run a specific named or saved workflow
+
+For any other task — even one that would benefit from parallelism — do NOT call this tool. Use the Agent tool for individual subagents, or describe what a workflow could do and ask the user whether to run it.
+
+**Key patterns**:
+- **pipeline()** (DEFAULT): items flow through stages independently, no barrier between stages
+- **parallel()**: barrier — awaits all before continuing (use sparingly, only when genuinely needed)
+- **agent()**: spawn subagent, optionally with JSON schema for structured output
+- **phase()**: group agents under progress titles
+- **log()**: emit narrator messages to user
+- **workflow()**: run another workflow inline as a sub-step
+
+**Quality patterns** (compose freely): Adversarial verify (spawn N independent skeptics, each prompted to REFUTE), Judge panel (N independent attempts → parallel judges → synthesize), Loop-until-dry (keep spawning finders until K consecutive rounds return nothing new), Multi-modal sweep (parallel agents each searching different way), Completeness critic (final agent asks "what's missing?").
+
+**Default to pipeline().** Only use parallel() as a barrier when stage N genuinely needs ALL prior-stage results together (dedup across full set, early-exit if count is zero, stage N references "the other findings" for comparison).
+
+**Script structure**: Every script must begin with `export const meta = {name, description, phases}` (pure literal). Pass the script inline via `script` — it's auto-persisted to a file. To iterate, edit that file and re-invoke with `{scriptPath}`.
+
+**Resume**: Pass `resumeFromRunId` to resume after pause/kill/edit — unchanged agent() calls return cached results instantly.
+
+**This session has the default workflow size guideline: medium — keep workflows under 15 agents.** This is a guideline, not a hard limit — follow it unless the user's prompt calls for a different scale.
+
+---
+
+## 12. Agent skills
 
 ### Issue tracker
 
@@ -261,3 +378,36 @@ Default triage label vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`
 ### Domain docs
 
 **Single-context layout.** Before exploring the codebase, read the relevant Context Documents (`00-project-overview.md` through `06-implementation-plan.md`) in `Context Documents/` and consult CLAUDE.md's locked decisions reference (section 4). See `docs/agents/domain.md` for consumer rules and file structure.
+
+### Phase 1 tickets
+
+**Ordered implementation reference.** See `docs/agents/TICKETS.md` for the consolidated Phase 1 ticket overview — quick summaries, implementation strategy, testing checkpoints, and cross-references. Use this as the master reference when implementing Phase 1 work. Each ticket also exists as:
+- **GitHub Issue**: [#1-#12](https://github.com/Sud0-AP/Gym-Buddy-unnamed/issues) with `ready-for-agent` label
+- **Local file**: `.scratch/phase1/issues/01-*.md` through `12-*.md` with full acceptance criteria
+
+### Artifact tool
+
+Use the Artifact tool to publish finished deliverables (specs, reports, reference docs) as private web pages on claude.ai that can later be shared. **Always load the `artifact-design` skill BEFORE writing any artifact** (HTML or Markdown) to calibrate design investment — format is part of that decision, never a speed shortcut. Artifacts start private; the user chooses whether to share.
+
+Key constraints:
+- HTML only (no external CDN scripts/stylesheets except Google Fonts)
+- 16MB page size limit, inline all CSS/JS, embed assets as data: URIs
+- Theme-aware (design for both light and dark)
+- Responsive (no horizontal body scroll)
+- Set `<title>` and `favicon` (emoji) — keep stable across redeploys
+- Update existing artifacts with `url` parameter (find with `action: "list"`)
+
+See the Artifact tool documentation above for full details on multi-file artifacts, runtime capabilities, database, comments, and resume.
+
+### Workflow tool
+
+Use the Workflow tool to orchestrate multi-agent work (parallel reviews, pipeline transforms, adversarial verification). **Only call this when the user explicitly opts in** — "use a workflow", "ultracode", or invokes a skill that tells you to use it. Workflows can spawn many agents and consume significant tokens.
+
+Key patterns:
+- **pipeline()** (default): items flow through stages independently, no barrier between stages
+- **parallel()**: barrier — awaits all before continuing (use sparingly)
+- **agent()**: spawn a subagent, optionally with JSON schema for structured output
+- **phase()**: group agents under progress titles
+- **log()**: emit narrator messages to user
+
+See the Workflow tool documentation above for quality patterns (adversarial verify, judge panel, loop-until-dry), resume behavior, and composability examples.

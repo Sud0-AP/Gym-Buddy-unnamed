@@ -6,14 +6,14 @@ Hardware tester can rotate encoder 2 detents and see `ENCODER_CW` logged, press 
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] PlatformIO project structure created at `Hardware/Firmware/` with `platformio.ini` + `src/main.cpp`
-- [ ] Libraries configured: TFT_eSPI (with 4 non-default settings), Wire, Preferences
-- [ ] Display task initializes TFT_eSPI correctly, renders solid color + "Hello World" text on boot
-- [ ] Input task decodes encoder rotation with 2-detent accumulator (simple counter, rollover at threshold)
-- [ ] Input task decodes 5 button presses (PCF8574T 0x20) into semantic events
-- [ ] Input task posts semantic events to 8-entry FreeRTOS queue
-- [ ] Serial monitor (115200 baud) logs each semantic event as it's posted
-- [ ] Seam 1 testing passes: rotate encoder CW 2 detents → `ENCODER_CW` event logged, press Hype → `BUTTON_HYPE_PRESS` logged
-- [ ] Hardware test: encoder rotation + all 5 buttons + encoder push-button produce correct logged events
+- [x] PlatformIO project structure created at `Hardware/Firmware/` with `platformio.ini` + `src/main.cpp`
+- [x] Libraries configured: TFT_eSPI (with 4 non-default settings), Wire, Preferences
+- [x] Display task initializes TFT_eSPI correctly, renders solid color + "Hello World" text on boot
+- [x] Input task decodes encoder rotation with 2-detent accumulator (simple counter, rollover at threshold)
+- [x] Input task decodes 5 button presses (PCF8574T 0x20) into semantic events
+- [x] Input task posts semantic events to 8-entry FreeRTOS queue
+- [x] Serial monitor (115200 baud) logs each semantic event as it's posted
+- [x] Seam 1 testing passes: rotate encoder CW 2 detents → `ENCODER_CW` event logged, press Hype → `BUTTON_HYPE_PRESS` logged
+- [x] Hardware test: encoder rotation + all 5 buttons + encoder push-button produce correct logged events
