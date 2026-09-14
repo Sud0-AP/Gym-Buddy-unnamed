@@ -74,6 +74,17 @@ static void app_handle_input_event(const InputEvent& evt) {
                     g_nav_stack.set_current_selection(next_sel);
                     log_nav_state("Nav selection");
                     notify_display_refresh();
+                } else if (screen_id == SCREEN_SETTINGS_BRIGHTNESS) {
+                    // Brightness adjustment: +1 per 2 detents (with detent counter)
+                    static uint8_t cw_detent_count = 0;
+                    cw_detent_count++;
+                    if (cw_detent_count >= 2) {
+                        cw_detent_count = 0;
+                        uint8_t new_brightness = (current.selection_index < 100) ? current.selection_index + 1 : 0;  // Wrap at 100
+                        g_nav_stack.set_current_selection(new_brightness);
+                        log_nav_state("Brightness adjust");
+                        notify_display_refresh();
+                    }
                 }
                 break;
             }
@@ -83,6 +94,17 @@ static void app_handle_input_event(const InputEvent& evt) {
                     g_nav_stack.set_current_selection(prev_sel);
                     log_nav_state("Nav selection");
                     notify_display_refresh();
+                } else if (screen_id == SCREEN_SETTINGS_BRIGHTNESS) {
+                    // Brightness adjustment: -1 per 2 detents (with detent counter)
+                    static uint8_t ccw_detent_count = 0;
+                    ccw_detent_count++;
+                    if (ccw_detent_count >= 2) {
+                        ccw_detent_count = 0;
+                        uint8_t new_brightness = (current.selection_index > 0) ? current.selection_index - 1 : 100;  // Wrap at 0
+                        g_nav_stack.set_current_selection(new_brightness);
+                        log_nav_state("Brightness adjust");
+                        notify_display_refresh();
+                    }
                 }
                 break;
             }
@@ -98,6 +120,13 @@ static void app_handle_input_event(const InputEvent& evt) {
                     // Settings—Main → Display selected: push Settings—Display
                     NavigationState settings_display_state = { SCREEN_SETTINGS_DISPLAY, 0, 0 };
                     if (g_nav_stack.push(settings_display_state)) {
+                        log_nav_state("Nav transition");
+                        notify_display_refresh();
+                    }
+                } else if (screen_id == SCREEN_SETTINGS_DISPLAY && current.selection_index == 0) {
+                    // Settings—Display → Brightness selected: push Settings—Brightness (starting at 50%)
+                    NavigationState settings_brightness_state = { SCREEN_SETTINGS_BRIGHTNESS, 50, 0 };
+                    if (g_nav_stack.push(settings_brightness_state)) {
                         log_nav_state("Nav transition");
                         notify_display_refresh();
                     }

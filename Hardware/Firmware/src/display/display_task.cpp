@@ -101,6 +101,19 @@ static void display_task_loop(void* pvParameters) {
                         }
                         rendered_screen_id = SCREEN_SETTINGS_DISPLAY;
                         rendered_selection_index = nav_state.selection_index;
+                    } else if (nav_state.screen_id == SCREEN_SETTINGS_BRIGHTNESS) {
+                        if (rendered_screen_id != SCREEN_SETTINGS_BRIGHTNESS) {
+                            // First time entering Settings—Brightness: full screen redraw
+                            draw_settings_brightness(nav_state.selection_index);
+                            Serial.printf("[DISPLAY] Full render Settings—Brightness, brightness=%u\n", nav_state.selection_index);
+                        } else if (rendered_selection_index != nav_state.selection_index) {
+                            // Already on Settings—Brightness, only value changed: fast in-place update (zero flicker)
+                            draw_settings_brightness_update_value(rendered_selection_index, nav_state.selection_index);
+                            Serial.printf("[DISPLAY] Fast Settings—Brightness value update %u -> %u\n",
+                                          rendered_selection_index, nav_state.selection_index);
+                        }
+                        rendered_screen_id = SCREEN_SETTINGS_BRIGHTNESS;
+                        rendered_selection_index = nav_state.selection_index;
                     } else {
                         // Returning to Home or other unhandled screen
                         rendered_screen_id = nav_state.screen_id;

@@ -22,6 +22,10 @@ void draw_settings_display(uint8_t selection_index);
 void draw_settings_main_update_selection(uint8_t old_index, uint8_t new_index);
 void draw_settings_display_update_selection(uint8_t old_index, uint8_t new_index);
 
+// Settings—Brightness screen (brightness value as selection_index 0-100)
+void draw_settings_brightness(uint8_t brightness_value);
+void draw_settings_brightness_update_value(uint8_t old_value, uint8_t new_value);
+
 // Direct variant wrappers
 void draw_menu_1();
 void draw_menu_2();
