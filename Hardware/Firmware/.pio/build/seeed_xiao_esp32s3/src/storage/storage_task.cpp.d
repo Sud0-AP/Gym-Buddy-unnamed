@@ -1,4 +1,5 @@
-.pio/build/seeed_xiao_esp32s3/src/main.cpp.o: src/main.cpp \
+.pio/build/seeed_xiao_esp32s3/src/storage/storage_task.cpp.o: \
+ src/storage/storage_task.cpp src/storage/storage_task.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp_arduino_version.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/FreeRTOS.h \
@@ -179,6 +180,4 @@
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_hw_support/include/soc/esp32/spiram.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/io_pin_remap.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
- src/display/display_task.h src/display/display_events.h \
- src/input/input_task.h src/input/input_events.h src/app/app_task.h \
- src/app/nav_stack.h src/app/nav_state.h src/storage/storage_task.h
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/libraries/Preferences/src/Preferences.h

@@ -46,6 +46,7 @@ static void display_task_loop(void* pvParameters) {
     // Track active screen and selection to enable flicker-free in-place updates
     uint8_t rendered_screen_id = SCREEN_HOME;
     uint8_t rendered_selection_index = 0;
+    uint8_t rendered_hype_rest_item = 255;  // 255 = uninitialised sentinel
 
     DisplayEvent evt;
     for (;;) {
@@ -115,6 +116,27 @@ static void display_task_loop(void* pvParameters) {
                         }
                         rendered_screen_id = SCREEN_SETTINGS_BRIGHTNESS;
                         rendered_selection_index = nav_state.selection_index;
+                    } else if (nav_state.screen_id == SCREEN_SETTINGS_HYPE_REST) {
+                        extern struct HypeRestState g_hype_rest_state;
+                        if (rendered_screen_id != SCREEN_SETTINGS_HYPE_REST) {
+                            // First entry: full screen draw
+                            draw_settings_hype_rest_full();
+                            rendered_hype_rest_item = g_hype_rest_state.selected_item;
+                            Serial.printf("[DISPLAY] Full render Settings—Hype&Rest\n");
+                        } else {
+                            // Already on screen: update only changed item(s) — zero flicker
+                            if (rendered_hype_rest_item != g_hype_rest_state.selected_item) {
+                                draw_settings_hype_rest_item(rendered_hype_rest_item);         // deselect old
+                                draw_settings_hype_rest_item(g_hype_rest_state.selected_item); // select new
+                                rendered_hype_rest_item = g_hype_rest_state.selected_item;
+                            } else {
+                                // Value changed on current item in edit mode
+                                draw_settings_hype_rest_item(g_hype_rest_state.selected_item);
+                            }
+                            Serial.printf("[DISPLAY] In-place Hype&Rest update, item=%u\n", g_hype_rest_state.selected_item);
+                        }
+                        rendered_screen_id = SCREEN_SETTINGS_HYPE_REST;
+                        rendered_selection_index = g_hype_rest_state.selected_item;
                     } else {
                         // Returning to Home or other unhandled screen
                         rendered_screen_id = nav_state.screen_id;

@@ -3,7 +3,22 @@
 #include "../input/input_task.h"
 #include "../display/display_events.h"
 #include "../display/display_task.h"
+#include "../display/screens.h"
 #include <Arduino.h>
+
+// Global Hype&Rest state
+HypeRestState g_hype_rest_state = {
+    .hype_exercise_based_time = false,
+    .hype_minutes = 1,
+    .hype_seconds = 30,
+    .hype_playlist_index = 0,
+    .rest_exercise_based_time = true,
+    .rest_minutes = 2,
+    .rest_seconds = 30,
+    .rest_playlist_index = 1,
+    .selected_item = 0,
+    .edit_mode = false
+};
 
 NavStack g_nav_stack;
 
@@ -82,6 +97,24 @@ static void app_handle_input_event(const InputEvent& evt) {
                         log_nav_state("Brightness adjust");
                         notify_display_refresh();
                     }
+                } else if (screen_id == SCREEN_SETTINGS_HYPE_REST && !g_hype_rest_state.edit_mode) {
+                    // CW = scroll DOWN (increment item index)
+                    g_hype_rest_state.selected_item = (g_hype_rest_state.selected_item + 1) % 8;
+                    Serial.printf("[APP] Hype&Rest selection: %u\n", g_hype_rest_state.selected_item);
+                    notify_display_refresh();
+                } else if (screen_id == SCREEN_SETTINGS_HYPE_REST && g_hype_rest_state.edit_mode) {
+                    // CW = decrement value (reversed from navigation mode)
+                    uint8_t item = g_hype_rest_state.selected_item;
+                    if (item == 1 && g_hype_rest_state.hype_minutes > 0) g_hype_rest_state.hype_minutes--;
+                    else if (item == 2 && g_hype_rest_state.hype_seconds >= 5) g_hype_rest_state.hype_seconds -= 5;
+                    else if (item == 2 && g_hype_rest_state.hype_seconds > 0) g_hype_rest_state.hype_seconds = 0;
+                    else if (item == 3) g_hype_rest_state.hype_playlist_index = (g_hype_rest_state.hype_playlist_index + 4) % 5;
+                    else if (item == 5 && g_hype_rest_state.rest_minutes > 0) g_hype_rest_state.rest_minutes--;
+                    else if (item == 6 && g_hype_rest_state.rest_seconds >= 5) g_hype_rest_state.rest_seconds -= 5;
+                    else if (item == 6 && g_hype_rest_state.rest_seconds > 0) g_hype_rest_state.rest_seconds = 0;
+                    else if (item == 7) g_hype_rest_state.rest_playlist_index = (g_hype_rest_state.rest_playlist_index + 4) % 5;
+                    Serial.printf("[APP] Hype&Rest edit: adjusted value\n");
+                    notify_display_refresh();
                 }
                 break;
             }
@@ -99,6 +132,24 @@ static void app_handle_input_event(const InputEvent& evt) {
                         log_nav_state("Brightness adjust");
                         notify_display_refresh();
                     }
+                } else if (screen_id == SCREEN_SETTINGS_HYPE_REST && !g_hype_rest_state.edit_mode) {
+                    // CCW = scroll UP (decrement item index)
+                    g_hype_rest_state.selected_item = (g_hype_rest_state.selected_item + 7) % 8;
+                    Serial.printf("[APP] Hype&Rest selection: %u\n", g_hype_rest_state.selected_item);
+                    notify_display_refresh();
+                } else if (screen_id == SCREEN_SETTINGS_HYPE_REST && g_hype_rest_state.edit_mode) {
+                    // CCW = increment value (reversed from navigation mode)
+                    uint8_t item = g_hype_rest_state.selected_item;
+                    if (item == 1 && g_hype_rest_state.hype_minutes < 10) g_hype_rest_state.hype_minutes++;
+                    else if (item == 2 && g_hype_rest_state.hype_seconds <= 54) g_hype_rest_state.hype_seconds += 5;
+                    else if (item == 2 && g_hype_rest_state.hype_seconds < 59) g_hype_rest_state.hype_seconds = 59;
+                    else if (item == 3) g_hype_rest_state.hype_playlist_index = (g_hype_rest_state.hype_playlist_index + 1) % 5;
+                    else if (item == 5 && g_hype_rest_state.rest_minutes < 10) g_hype_rest_state.rest_minutes++;
+                    else if (item == 6 && g_hype_rest_state.rest_seconds <= 54) g_hype_rest_state.rest_seconds += 5;
+                    else if (item == 6 && g_hype_rest_state.rest_seconds < 59) g_hype_rest_state.rest_seconds = 59;
+                    else if (item == 7) g_hype_rest_state.rest_playlist_index = (g_hype_rest_state.rest_playlist_index + 1) % 5;
+                    Serial.printf("[APP] Hype&Rest edit: adjusted value\n");
+                    notify_display_refresh();
                 }
                 break;
             }
@@ -117,6 +168,13 @@ static void app_handle_input_event(const InputEvent& evt) {
                         log_nav_state("Nav transition");
                         notify_display_refresh();
                     }
+                } else if (screen_id == SCREEN_SETTINGS_MAIN && current.selection_index == 1) {
+                    // Settings—Main → Hype & Rest selected: push Settings—Hype&Rest
+                    NavigationState settings_hype_rest_state = { SCREEN_SETTINGS_HYPE_REST, 0, 0 };
+                    if (g_nav_stack.push(settings_hype_rest_state)) {
+                        log_nav_state("Nav transition");
+                        notify_display_refresh();
+                    }
                 } else if (screen_id == SCREEN_SETTINGS_DISPLAY && current.selection_index == 0) {
                     // Settings—Display → Brightness selected: push Settings—Brightness (starting at 50%)
                     NavigationState settings_brightness_state = { SCREEN_SETTINGS_BRIGHTNESS, 50, 0 };
@@ -124,6 +182,25 @@ static void app_handle_input_event(const InputEvent& evt) {
                         log_nav_state("Nav transition");
                         notify_display_refresh();
                     }
+                } else if (screen_id == SCREEN_SETTINGS_HYPE_REST && !g_hype_rest_state.edit_mode) {
+                    // Settings—Hype&Rest BROWSE MODE: encoder press enters edit or toggles checkbox
+                    uint8_t item = g_hype_rest_state.selected_item;
+                    if (item == 0 || item == 4) {
+                        // Checkbox: toggle immediately, no edit mode
+                        if (item == 0) g_hype_rest_state.hype_exercise_based_time = !g_hype_rest_state.hype_exercise_based_time;
+                        else g_hype_rest_state.rest_exercise_based_time = !g_hype_rest_state.rest_exercise_based_time;
+                        Serial.printf("[APP] Toggled checkbox %u\n", item);
+                    } else {
+                        // Time field or playlist: enter edit mode
+                        g_hype_rest_state.edit_mode = true;
+                        Serial.printf("[APP] Entered edit mode for item %u\n", item);
+                    }
+                    notify_display_refresh();
+                } else if (screen_id == SCREEN_SETTINGS_HYPE_REST && g_hype_rest_state.edit_mode) {
+                    // Settings—Hype&Rest EDIT MODE: encoder press saves & exits edit mode
+                    g_hype_rest_state.edit_mode = false;
+                    Serial.printf("[APP] Exited edit mode, value saved\n");
+                    notify_display_refresh();
                 } else {
                     Serial.printf("[APP] Encoder press on screen_id=%s, selection_index=%u (no action)\n",
                                   screen_id_to_string(screen_id),

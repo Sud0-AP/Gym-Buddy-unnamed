@@ -75,6 +75,7 @@
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/queue.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/task.h \
  src/app/../display/display_events.h src/app/../display/display_task.h \
+ src/app/../display/screens.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp_arduino_version.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/semphr.h \

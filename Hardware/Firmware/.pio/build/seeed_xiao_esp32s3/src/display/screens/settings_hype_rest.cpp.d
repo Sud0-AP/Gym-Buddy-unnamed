@@ -1,4 +1,6 @@
-.pio/build/seeed_xiao_esp32s3/src/main.cpp.o: src/main.cpp \
+.pio/build/seeed_xiao_esp32s3/src/display/screens/settings_hype_rest.cpp.o: \
+ src/display/screens/settings_hype_rest.cpp \
+ src/display/screens/../screens.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp_arduino_version.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/freertos/include/freertos/FreeRTOS.h \
@@ -179,6 +181,106 @@
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_hw_support/include/soc/esp32/spiram.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/io_pin_remap.h \
  /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Arduino.h \
- src/display/display_task.h src/display/display_events.h \
- src/input/input_task.h src/input/input_events.h src/app/app_task.h \
- src/app/nav_stack.h src/app/nav_state.h src/storage/storage_task.h
+ src/display/screens/../assets_common.h \
+ src/display/screens/../ui_primitives.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/TFT_eSPI.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/Print.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src/SPI.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-spi.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/User_Setup_Select.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/TFT_Drivers/ST7789_Defines.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Processors/TFT_eSPI_ESP32_S3.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/spi_reg.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/driver/include/driver/spi_master.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/driver/include/driver/spi_common.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/include/soc/lldesc.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/esp_rom/include/esp32s3/rom/lldesc.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/include/soc/spi_periph.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/periph_defs.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/soc_pins.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/usb_pins.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/gpio_pins.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/spi_pins.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/sdio_slave_pins.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/sdmmc_pins.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/touch_sensor_pins.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/spi_struct.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/spi_mem_struct.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/spi_mem_reg.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/hal/include/hal/spi_types.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/hal/esp32s3/include/hal/gpio_ll.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/rtc_cntl_reg.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/rtc_io_reg.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s3/include/soc/esp32s3/include/soc/usb_serial_jtag_reg.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/libraries/FS/src/FS.h \
+ /home/Sud0/.platformio/packages/framework-arduinoespressif32/libraries/SPIFFS/src/SPIFFS.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/glcdfont.c \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font16.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font16.c \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font32rle.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font32rle.c \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font64rle.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font64rle.c \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font7srle.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font7srle.c \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font72rle.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Font72rle.c \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/gfxfont.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/TomThumb.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMono9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMono12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMono18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMono24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoOblique24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoBold9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoBold12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoBold18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoBold24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeMonoBoldOblique24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSans9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSans12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSans18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSans24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansOblique9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansOblique12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansOblique18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansOblique24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansBold9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansBold12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansBold18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansBold24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSansBoldOblique24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerif9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerif12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerif18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerif24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifItalic24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifBold9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifBold12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifBold18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifBold24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic9pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic12pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic18pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/GFXFF/FreeSerifBoldItalic24pt7b.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/User_Setups/User_Custom_Fonts.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Custom/Orbitron_Light_24.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Custom/Orbitron_Light_32.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Custom/Roboto_Thin_24.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Custom/Satisfy_24.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Fonts/Custom/Yellowtail_32.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Extensions/Smooth_font.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Extensions/Button.h \
+ .pio/libdeps/seeed_xiao_esp32s3/TFT_eSPI/Extensions/Sprite.h
