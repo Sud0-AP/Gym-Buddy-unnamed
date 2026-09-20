@@ -67,7 +67,18 @@ static void app_handle_input_event(const InputEvent& evt) {
             case InputEventType::BUTTON_PREV_PRESS:
             case InputEventType::BUTTON_PLAY_PAUSE_PRESS:
             case InputEventType::BUTTON_NEXT_PRESS:
-                Serial.printf("[APP] Global music button pressed on Home: %s\n", input_event_to_string(evt.type));
+                // Global music buttons work on ALL screens, mutate dummy state
+                if (evt.type == InputEventType::BUTTON_PREV_PRESS) {
+                    g_dummy_music.trackTitle[0] = 'P'; // Change track to indicate prev pressed
+                    Serial.println("[APP] Music Previous (dummy track change)");
+                } else if (evt.type == InputEventType::BUTTON_PLAY_PAUSE_PRESS) {
+                    g_dummy_music.isPlaying = !g_dummy_music.isPlaying;
+                    Serial.printf("[APP] Music Play/Pause toggled: %s\n", g_dummy_music.isPlaying ? "playing" : "paused");
+                } else if (evt.type == InputEventType::BUTTON_NEXT_PRESS) {
+                    g_dummy_music.trackTitle[0] = 'N'; // Change track to indicate next pressed
+                    Serial.println("[APP] Music Next (dummy track change)");
+                }
+                notify_display_refresh();
                 break;
             default:
                 break;
